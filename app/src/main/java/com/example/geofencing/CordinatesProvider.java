@@ -12,16 +12,24 @@ import androidx.annotation.Nullable;
 import androidx.room.Room;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
+
+/*
+  Ulopoiw enan provider gia na mporesw na dwsw ta dedomena sthn deuterh efarmogh
+ */
 public class CordinatesProvider extends ContentProvider
 {
+
     private UriMatcher uriMatcher;
-    private Context context;
+    private Context context; // orizw to context gia to map , kai na to xrhsimopoihsw kai sthn deuterh efarmogh endexomenws
 
     //crete uri matcher and add URI
     @Override
-    public boolean onCreate() {
-        uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(InitializationsDB.getAUTHORITY(),InitializationsDB.getTableName(),InitializationsDB.getDbVersion());
+    public boolean onCreate() { // otan ksekina to programma
+        uriMatcher = new UriMatcher(UriMatcher.NO_MATCH); // ftiaxnw ena adeio URI
+        uriMatcher.addURI( //kai to arxikopoiw meta me times
+                InitializationsDB.getAUTHORITY(),
+                InitializationsDB.getTableName(),
+                InitializationsDB.getDbVersion());
         return false;
     }
 
@@ -38,8 +46,11 @@ public class CordinatesProvider extends ContentProvider
             @Nullable String sortOrder
         )
     {
-        context = MapsActivity.getContext();
-        geofenceDB dDB = Room.databaseBuilder(context,geofenceDB.class,InitializationsDB.getTableName()).build();
+        context = MapsActivity.getContext(); // pernaw to context tou map activity
+        geofenceDBController dDB = Room.databaseBuilder( // kai xtizw thn bash
+                context,
+                geofenceDBController.class,
+                InitializationsDB.getTableName()).build();
         Cursor cursor = null;
 
         if (uriMatcher.match(uri)==1){

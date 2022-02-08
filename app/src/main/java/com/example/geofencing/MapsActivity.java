@@ -114,7 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // here to request the missing permissions, and then overriding
                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
                     //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
+                    // to handle the case where the user grants the pe`rmission. See the documentation
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
@@ -199,7 +199,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onFailure(@NonNull Exception e)
             {
                 String errorMessage= geofenceHelper.getErrorString(e);
-                Log.d(TAG, "onFailure" +errorMessage);
+                Log.d(TAG, "onFailure: " +errorMessage);
             }
         });
     }

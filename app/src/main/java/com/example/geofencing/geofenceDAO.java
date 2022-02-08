@@ -10,6 +10,7 @@ import java.util.List;
 
 
 @Dao
+//Dhmiourgw to Dao gia na mh xreiazetai na kanw ta queries se SQL alla na xw mia pio aploustemenh morfh kai na ta pernaei se java
 //ulopoiw to query ths bashs kai thn proshidi suntetagmenwn
 public interface geofenceDAO
 {

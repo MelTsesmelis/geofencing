@@ -14,6 +14,9 @@ import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.List;
 
+
+
+
 public class GeofenceBroadcastReceiver extends BroadcastReceiver
 {
     private static final String TAG = "GeofenceBroadCastReceive";
@@ -23,8 +26,9 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver
         return TAG;
     }
 
+
     @Override
-    public void onReceive(Context context, Intent intent)
+    public void onReceive(Context context, Intent intent)// me to pou erthei kapoio ENTER h EXIT  apo ta geofences
     {
          //  This method is called when the BroadcastReceiver is receiving
         //add an notificationHelper for notifications
@@ -32,9 +36,10 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver
 
         Toast.makeText(context, "Geofence triggered... ", Toast.LENGTH_SHORT).show();
 
-        //geofencing event
+        //geofencing event , gia na dw an ekane EXIT h ENTER kai ta cordinates
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
+        //se periptwsh sfalmatos
         if (geofencingEvent.hasError())
         {
             Log.d( "TAG" , "onReceive:Error geofence event");
@@ -42,28 +47,34 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver
         }
 
         //so we have no problems with geofencing event if we are here
-
+        //Gurnaei thn lista  me ta geofence
         List <Geofence> geofenceList= geofencingEvent.getTriggeringGeofences();
         for (Geofence geofence: geofenceList)
         {
             Log.d("TAG", "onReceive:"+geofence.getRequestId());
         }
 
+        //edw xwrizw to event kai pairnw xwrista to transitionType
         int transitionType = geofencingEvent.getGeofenceTransition();
 
+        //kai to location
         Location location = geofencingEvent.getTriggeringLocation();
 
 
-        //new object  to insert in DB
-        geofenceDB gdb = Room.databaseBuilder(context,geofenceDB.class,InitializationsDB.getTableName()).build();
+        //edw ftiaxnw kainourgio object gia thn db
+        geofenceDBController gdb = Room.databaseBuilder( //anoigw thn bash
+                context,
+                geofenceDBController.class,
+                InitializationsDB.getTableName()).build();
         geofenceDAO geofenceDAO= gdb.geofenceDao();
-        Cordinates cordinate = new Cordinates();
+        Cordinates cordinate = new Cordinates(); //pairnw to cordinate gia to insert
 
         cordinate.setLatitude(location.getLatitude());
         cordinate.setLongitude(location.getLongitude());
         cordinate.setTransition(transitionType);
         cordinate.setTimestamp(location.getTime());
 
+        //ftiaxnw ena thread  gia na trexei ksexwrista
         Thread thread = new Thread(new Runnable()
         {
             @Override
@@ -79,19 +90,17 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver
                 }
             }
         });
-        thread.start();
+        thread.start(); //kai to ksekinaw
+
 
         //kathe fora pou tha mpainei h tha bgainei ston kuklo tote tha xtupaei katallhlo notification
-        switch (transitionType)
-        {
-            case Geofence.GEOFENCE_TRANSITION_ENTER:
-                //Toast.makeText(context, "GEOFENCE_TRANSITION_ENTER", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_ENTER","",MapsActivity.class);
-                break;
-            case Geofence.GEOFENCE_TRANSITION_EXIT:
-                //Toast.makeText(context, "GEOFENCE_TRANSITION_EXIT", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_EXIT","",MapsActivity.class);
-                break;
+        if(transitionType==Geofence.GEOFENCE_TRANSITION_ENTER){
+            notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_ENTER","",MapsActivity.class);
+        }else if(transitionType==Geofence.GEOFENCE_TRANSITION_EXIT){
+            notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_EXIT","",MapsActivity.class);
         }
+
+        //kleinw thn  db
+        gdb.close();
     }
 }

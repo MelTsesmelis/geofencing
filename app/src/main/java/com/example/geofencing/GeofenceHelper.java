@@ -24,16 +24,29 @@ public class GeofenceHelper extends ContextWrapper {
         super(base);
     }
 
-    //pairnei to request gia to geofencing xrhsimopoiwntas ton builder kai tous triggers
+    //tou dinw geofence kai an mpei to gps mesa ston kuklo tha steilei oti ekane ENTER kai antistoixa otan bgei tha steilei EXIT
     public GeofencingRequest getGeofencingRequest( Geofence geofence)
     {
-        return new GeofencingRequest.Builder().addGeofence(geofence).setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER).build();
+        return new GeofencingRequest.Builder()
+                .addGeofence(geofence)
+                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER |GeofencingRequest.INITIAL_TRIGGER_EXIT)
+                .build();
     }
 
-    //get geofence
+    //sthn ousia dhmiourgei ton kuklo
     public Geofence getGeofence(String ID, LatLng latLng, float radius , int transitionTypes)
     {
-        return new Geofence.Builder().setCircularRegion(latLng.latitude,latLng.longitude,radius).setRequestId(ID).setTransitionTypes(transitionTypes).setLoiteringDelay(5000).setExpirationDuration(Geofence.NEVER_EXPIRE).build();
+        int delay = 2000; //to delay pou tha exei gia na deiksei oti eisai sthn perioxh
+        return new Geofence.Builder()
+                .setCircularRegion(
+                            latLng.latitude,
+                            latLng.longitude,
+                            radius)
+                .setRequestId(ID)
+                .setTransitionTypes(transitionTypes) // ton endiaferoun mono ta transitions EXIT ENTER
+                .setLoiteringDelay(delay)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE) // Epomenws meta to kathorismeno delay tha sunexisei na ufistantia o kuklos
+                .build();
     }
 
     //xrhsimopoiei ta intents gia na sundesei ton broadcast receiver me authn thn klash
@@ -44,7 +57,11 @@ public class GeofenceHelper extends ContextWrapper {
             return pendingIntent;
         }
         Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        pendingIntent= PendingIntent.getBroadcast(this,2607,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntent= PendingIntent.getBroadcast(
+                this,
+                2607,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
         return pendingIntent;
     }
 
