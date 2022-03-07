@@ -1,6 +1,3 @@
 # geofencing
+	This project created on android studio. Related to geofencing on andoid. It can locate the user`s location after his permission and allow him tag another location. When he enter or exit of this location then he receive a notification. User can see where he went using another app conected with providers and take the data of the other app.
 
-created on android studio.
-This project is related to geofencing on android, 
-it can also locate the user's location after his permission 
-and allows him to tag a location. When he enters this location and when he leaves he will receive notifications
